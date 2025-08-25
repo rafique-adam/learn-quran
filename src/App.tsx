@@ -348,7 +348,6 @@ function App() {
             <ul className="space-y-4 mb-8">
               <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Access to 3 sample recitations</li>
               <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Basic progress tracking</li>
-              <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Community support</li>
               <li className="flex items-center text-gray-400"><Shield className="w-5 h-5 text-gray-400 mr-3" />No pair reading sessions</li>
               <li className="flex items-center text-gray-400"><Shield className="w-5 h-5 text-gray-400 mr-3" />Limited recitation library</li>
             </ul>
