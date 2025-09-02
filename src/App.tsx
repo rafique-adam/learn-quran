@@ -730,70 +730,138 @@ function App() {
               {/* Account Details Form */}
               <div className="border-t border-gray-200 pt-8">
                 <h4 className="text-xl font-bold text-gray-900 mb-6">Account Details</h4>
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                    <input 
-                      type="text" 
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
-                      placeholder="Enter your full name"
-                    />
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  const newUser: User = {
+                    name: formData.name,
+                    email: formData.email,
+                    userType: userType!,
+                    learningLevel: learningLevel!,
+                    selectedSessions,
+                    paymentStatus: 'unpaid'
+                  };
+                  setCurrentUser(newUser);
+                  setCurrentPage('dashboard');
+                }}>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                      <input 
+                        type="text" 
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                        placeholder="Enter your full name"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                      <input 
+                        type="email" 
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                        placeholder="your@email.com"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                      <input 
+                        type="password" 
+                        name="password"
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                        placeholder="••••••••"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <Cake className="w-4 h-4 inline mr-2" />
+                        Date of Birth
+                      </label>
+                      <input 
+                        type="date" 
+                        name="dateOfBirth"
+                        value={formData.dateOfBirth}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <MapPin className="w-4 h-4 inline mr-2" />
+                        Country
+                      </label>
+                      <select
+                        name="country"
+                        value={formData.country}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        required
+                      >
+                        <option value="">Select your country</option>
+                        {countries.map((country) => (
+                          <option key={country.code} value={country.name}>
+                            {country.flag} {country.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <Phone className="w-4 h-4 inline mr-2" />
+                        Phone Number
+                      </label>
+                      <div className="flex gap-2">
+                        <select
+                          name="countryCode"
+                          value={formData.countryCode}
+                          onChange={handleInputChange}
+                          className="px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white"
+                        >
+                          {countries.map((country) => (
+                            <option key={country.code} value={country.code}>
+                              {country.flag} {country.code}
+                            </option>
+                          ))}
+                        </select>
+                        <input
+                          type="tel"
+                          name="phoneNumber"
+                          value={formData.phoneNumber}
+                          onChange={handleInputChange}
+                          className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                          placeholder="Enter phone number"
+                          required
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                    <input 
-                      type="email" 
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
-                      placeholder="your@email.com"
-                    />
+                  
+                  <div className="flex items-center justify-between mt-8">
+                    <button 
+                      type="button"
+                      onClick={() => setLearningLevel(null)}
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      ← Back to level selection
+                    </button>
+                    <button 
+                      type="submit"
+                      className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-3 rounded-xl font-semibold hover:from-emerald-600 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+                      disabled={selectedSessions.length === 0}
+                    >
+                      Create Account
+                    </button>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                    <input 
-                      type="password" 
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
-                      placeholder="••••••••"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Age</label>
-                    <input 
-                      type="number" 
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
-                      placeholder="Enter your age"
-                      min={userType === 'child' ? 6 : 18}
-                      max={userType === 'child' ? 17 : 100}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between mt-8">
-                <button 
-                  onClick={() => setLearningLevel(null)}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  ← Back to level selection
-                </button>
-                <button 
-                  onClick={() => {
-                    // Create user account (mock)
-                    const newUser: User = {
-                      name: 'Student Name', // In real app, get from form
-                      email: 'student@email.com', // In real app, get from form
-                      userType: userType!,
-                      learningLevel: learningLevel!,
-                      selectedSessions,
-                      paymentStatus: 'unpaid'
-                    };
-                    setCurrentUser(newUser);
-                    setCurrentPage('dashboard');
-                  }}
-                  className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-3 rounded-xl font-semibold hover:from-emerald-600 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl"
-                  disabled={selectedSessions.length === 0}
-                >
-                  Create Account
-                </button>
+                </form>
               </div>
             </div>
           )}
@@ -1136,14 +1204,14 @@ function App() {
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 <User className="w-5 h-5 text-gray-600" />
-                <span className="text-gray-700 font-medium">{currentUser?.name || 'Student'}</span>
+                <span className="text-gray-700 font-medium">{currentUser?.name}</span>
               </div>
               <button 
                 onClick={() => {
                   setCurrentUser(null);
                   setCurrentPage('home');
                 }}
-                className="text-gray-600 hover:text-gray-800"
+                className="text-gray-600 hover:text-gray-800 transition-colors"
               >
                 Logout
               </button>
@@ -1161,105 +1229,116 @@ function App() {
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                    Welcome back, {currentUser?.name || 'Student'}! 👋
+                    Welcome back, {currentUser?.name}! 👋
                   </h1>
                   <p className="text-gray-600">
                     Continue your {currentUser?.learningLevel} level Quran learning journey
                   </p>
                 </div>
-                {currentUser?.paymentStatus === 'unpaid' && (
-                  <div className="text-center">
-                    <Crown className="w-12 h-12 text-yellow-500 mx-auto mb-2" />
+                <div className="text-right">
+                  <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                    currentUser?.paymentStatus === 'paid' 
+                      ? 'bg-emerald-100 text-emerald-700' 
+                      : 'bg-yellow-100 text-yellow-700'
+                  }`}>
+                    {currentUser?.paymentStatus === 'paid' ? (
+                      <>
+                        <Crown className="w-4 h-4 mr-1" />
+                        Premium Member
+                      </>
+                    ) : (
+                      <>
+                        <Clock className="w-4 h-4 mr-1" />
+                        Free Trial
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Payment Status Banner */}
+              {currentUser?.paymentStatus === 'unpaid' && (
+                <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-xl p-6 mb-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <Crown className="w-8 h-8 text-yellow-500" />
+                      <div>
+                        <h3 className="font-semibold text-gray-900">Upgrade to Premium</h3>
+                        <p className="text-sm text-gray-600">
+                          Unlock live sessions, progress tracking, and personalized feedback
+                        </p>
+                      </div>
+                    </div>
                     <button 
                       onClick={() => {
                         if (currentUser) {
                           setCurrentUser({...currentUser, paymentStatus: 'paid'});
                         }
                       }}
-                      className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-emerald-600 hover:to-teal-700 transition-all duration-200"
+                      className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-emerald-600 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl"
                     >
-                      Upgrade to Premium
+                      Upgrade Now - $19/month
                     </button>
-                  </div>
-                )}
-              </div>
-              
-              {currentUser?.paymentStatus === 'unpaid' && (
-                <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
-                  <div className="flex items-center space-x-3">
-                    <Crown className="w-6 h-6 text-yellow-600" />
-                    <div>
-                      <h3 className="font-semibold text-yellow-800">Premium Required</h3>
-                      <p className="text-sm text-yellow-700">
-                        Upgrade to access live sessions, progress tracking, and personalized feedback.
-                      </p>
-                    </div>
                   </div>
                 </div>
               )}
-            </div>
 
-            {/* My Sessions */}
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">My Sessions</h2>
-                <div className="flex items-center space-x-2 text-sm text-gray-500">
-                  <Calendar className="w-4 h-4" />
-                  <span>This Week</span>
-                </div>
-              </div>
-              
-              <div className="space-y-4">
-                {currentUser?.selectedSessions.map(sessionId => {
-                  const session = allSessions.find(s => s.id === sessionId);
-                  if (!session) return null;
-                  
-                  return (
-                    <div key={sessionId} className="relative">
-                      <div className={`p-4 border-2 rounded-xl ${
-                        currentUser?.paymentStatus === 'paid' 
-                          ? 'border-emerald-200 bg-emerald-50' 
-                          : 'border-gray-200 opacity-60'
-                      }`}>
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <h3 className="font-semibold text-gray-900 mb-1">{session.name}</h3>
-                            <div className="flex items-center space-x-4 text-sm text-gray-600">
-                              <div className="flex items-center space-x-1">
-                                <Calendar className="w-4 h-4" />
-                                <span>{session.day}</span>
-                              </div>
-                              <div className="flex items-center space-x-1">
-                                <Clock className="w-4 h-4" />
-                                <span>{session.time} - {session.endTime}</span>
+              {/* Sessions Overview */}
+              <div>
+                <h2 className="text-xl font-bold text-gray-900 mb-4">Your Learning Sessions</h2>
+                
+                <div className="space-y-4">
+                  {currentUser?.selectedSessions.map(sessionId => {
+                    const session = allSessions.find(s => s.id === sessionId);
+                    if (!session) return null;
+                    
+                    return (
+                      <div key={sessionId} className="relative">
+                        <div className={`p-4 border-2 rounded-xl ${
+                          currentUser?.paymentStatus === 'paid' 
+                            ? 'border-emerald-200 bg-emerald-50' 
+                            : 'border-gray-200 opacity-60'
+                        }`}>
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h3 className="font-semibold text-gray-900 mb-1">{session.name}</h3>
+                              <div className="flex items-center space-x-4 text-sm text-gray-600">
+                                <div className="flex items-center space-x-1">
+                                  <Calendar className="w-4 h-4" />
+                                  <span>{session.day}</span>
+                                </div>
+                                <div className="flex items-center space-x-1">
+                                  <Clock className="w-4 h-4" />
+                                  <span>{session.time} - {session.endTime}</span>
+                                </div>
                               </div>
                             </div>
+                            {currentUser?.paymentStatus === 'paid' && (
+                              <button className="bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition-colors">
+                                Join Session
+                              </button>
+                            )}
                           </div>
-                          {currentUser?.paymentStatus === 'paid' && (
-                            <button className="bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition-colors">
-                              Join Session
-                            </button>
-                          )}
                         </div>
+                        {currentUser?.paymentStatus === 'unpaid' && (
+                          <div className="absolute inset-0 bg-white/80 rounded-xl flex items-center justify-center">
+                            <div className="text-center">
+                              <Crown className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
+                              <p className="text-sm font-medium text-gray-700">Premium Required</p>
+                            </div>
+                          </div>
+                        )}
                       </div>
-                      {currentUser?.paymentStatus === 'unpaid' && (
-                        <div className="absolute inset-0 bg-white/80 rounded-xl flex items-center justify-center">
-                          <div className="text-center">
-                            <Crown className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
-                            <p className="text-sm font-medium text-gray-700">Premium Required</p>
-                          </div>
-                        </div>
-                      )}
+                    );
+                  })}
+                  
+                  {currentUser?.selectedSessions.length === 0 && (
+                    <div className="text-center py-8 text-gray-500">
+                      <Calendar className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                      <p>No sessions selected yet</p>
                     </div>
-                  );
-                })}
-                
-                {currentUser?.selectedSessions.length === 0 && (
-                  <div className="text-center py-8 text-gray-500">
-                    <Calendar className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p>No sessions selected yet</p>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             </div>
           </div>
