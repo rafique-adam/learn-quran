@@ -874,10 +874,407 @@ function App() {
         return <SignupPage />;
       case 'salat-videos':
         return <SalatVideosPage />;
+      case 'dashboard':
+        return <DashboardPage />;
       default:
         return <HomePage />;
     }
   };
+
+  const DashboardPage = () => (
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
+      {/* Navigation */}
+      <nav className="bg-white/80 backdrop-blur-md shadow-sm border-b border-emerald-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
+                <BookOpen className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                Lean Quran
+              </span>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2 text-gray-600">
+                <User className="w-4 h-4" />
+                <span>{currentUser?.name || 'Student'}</span>
+              </div>
+              <button 
+                onClick={() => {
+                  setCurrentUser(null);
+                  setCurrentPage('home');
+                  setUserType(null);
+                  setLearningLevel(null);
+                  setSelectedSessions([]);
+                }}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Payment Status Banner */}
+        {currentUser?.paymentStatus === 'unpaid' && (
+          <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-2xl p-6 mb-8 shadow-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                  <Crown className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold">Unlock Premium Features! 🌟</h3>
+                  <p className="opacity-90">Get access to live sessions and Quran recitations for just $19/month</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => {
+                  // Mock payment success
+                  if (currentUser) {
+                    setCurrentUser({...currentUser, paymentStatus: 'paid'});
+                  }
+                }}
+                className="bg-white text-orange-500 px-6 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-colors"
+              >
+                Upgrade Now
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Welcome Section */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+            Welcome back, {currentUser?.name || 'Student'}! 🌙
+          </h1>
+          <p className="text-xl text-gray-600">
+            Continue your beautiful Quran learning journey
+          </p>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid md:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white rounded-2xl p-6 shadow-lg border border-emerald-100">
+            <div className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl flex items-center justify-center">
+                <BookOpen className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Sessions Attended</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {currentUser?.paymentStatus === 'paid' ? '12' : '0'}
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white rounded-2xl p-6 shadow-lg border border-purple-100">
+            <div className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-500 rounded-xl flex items-center justify-center">
+                <Award className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Learning Streak</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {currentUser?.paymentStatus === 'paid' ? '7 days' : '0 days'}
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white rounded-2xl p-6 shadow-lg border border-blue-100">
+            <div className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-xl flex items-center justify-center">
+                <Star className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Badges Earned</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {currentUser?.paymentStatus === 'paid' ? '5' : '0'}
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white rounded-2xl p-6 shadow-lg border border-green-100">
+            <div className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl flex items-center justify-center">
+                <Globe className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Surahs Learned</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {currentUser?.paymentStatus === 'paid' ? '8' : '0'}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Quran Recitations Section */}
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">Quran Recitations 📖</h2>
+                {currentUser?.paymentStatus === 'unpaid' && (
+                  <div className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
+                    Premium Required
+                  </div>
+                )}
+              </div>
+              
+              <div className="grid md:grid-cols-2 gap-4">
+                {[
+                  { name: 'Al-Fatiha', arabic: 'الفاتحة', verses: 7, duration: '2:30' },
+                  { name: 'Al-Baqarah', arabic: 'البقرة', verses: 286, duration: '45:20' },
+                  { name: 'Al-Ikhlas', arabic: 'الإخلاص', verses: 4, duration: '1:15' },
+                  { name: 'An-Nas', arabic: 'الناس', verses: 6, duration: '1:45' }
+                ].map((surah, index) => (
+                  <div key={index} className="relative">
+                    <div className={`p-4 border-2 rounded-xl transition-all duration-200 ${
+                      currentUser?.paymentStatus === 'paid' 
+                        ? 'border-emerald-200 hover:border-emerald-400 hover:bg-emerald-50 cursor-pointer' 
+                        : 'border-gray-200 opacity-60'
+                    }`}>
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-semibold text-gray-900">{surah.name}</h3>
+                        <span className="text-xl text-emerald-600">{surah.arabic}</span>
+                      </div>
+                      <div className="flex items-center justify-between text-sm text-gray-500">
+                        <span>{surah.verses} verses</span>
+                        <span>{surah.duration}</span>
+                      </div>
+                      {currentUser?.paymentStatus === 'paid' && (
+                        <button className="mt-3 w-full bg-emerald-500 text-white py-2 rounded-lg hover:bg-emerald-600 transition-colors">
+                          <Play className="w-4 h-4 inline mr-2" />
+                          Listen
+                        </button>
+                      )}
+                    </div>
+                    {currentUser?.paymentStatus === 'unpaid' && (
+                      <div className="absolute inset-0 bg-white/80 rounded-xl flex items-center justify-center">
+                        <div className="text-center">
+                          <Crown className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
+                          <p className="text-sm font-medium text-gray-700">Premium Required</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Live Sessions Section */}
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">Your Live Sessions 🎯</h2>
+                {currentUser?.paymentStatus === 'unpaid' && (
+                  <div className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
+                    Premium Required
+                  </div>
+                )}
+              </div>
+              
+              <div className="space-y-4">
+                {currentUser?.selectedSessions.map(sessionId => {
+                  const session = allSessions.find(s => s.id === sessionId);
+                  if (!session) return null;
+                  
+                  return (
+                    <div key={sessionId} className="relative">
+                      <div className={`p-4 border-2 rounded-xl ${
+                        currentUser?.paymentStatus === 'paid' 
+                          ? 'border-emerald-200 bg-emerald-50' 
+                          : 'border-gray-200 opacity-60'
+                      }`}>
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h3 className="font-semibold text-gray-900 mb-1">{session.name}</h3>
+                            <div className="flex items-center space-x-4 text-sm text-gray-600">
+                              <div className="flex items-center space-x-1">
+                                <Calendar className="w-4 h-4" />
+                                <span>{session.day}</span>
+                              </div>
+                              <div className="flex items-center space-x-1">
+                                <Clock className="w-4 h-4" />
+                                <span>{session.time} - {session.endTime}</span>
+                              </div>
+                            </div>
+                          </div>
+                          {currentUser?.paymentStatus === 'paid' && (
+                            <button className="bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition-colors">
+                              Join Session
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                      {currentUser?.paymentStatus === 'unpaid' && (
+                        <div className="absolute inset-0 bg-white/80 rounded-xl flex items-center justify-center">
+                          <div className="text-center">
+                            <Crown className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
+                            <p className="text-sm font-medium text-gray-700">Premium Required</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+                
+                {currentUser?.selectedSessions.length === 0 && (
+                  <div className="text-center py-8 text-gray-500">
+                    <Calendar className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p>No sessions selected yet</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Quick Actions */}
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Quick Actions</h3>
+              <div className="space-y-3">
+                <button 
+                  onClick={() => setCurrentPage('salat-videos')}
+                  className="w-full flex items-center space-x-3 p-3 bg-emerald-50 text-emerald-700 rounded-xl hover:bg-emerald-100 transition-colors"
+                >
+                  <Play className="w-5 h-5" />
+                  <span>Watch Salat Videos (Free)</span>
+                </button>
+                
+                <div className="relative">
+                  <button 
+                    className={`w-full flex items-center space-x-3 p-3 rounded-xl transition-colors ${
+                      currentUser?.paymentStatus === 'paid'
+                        ? 'bg-purple-50 text-purple-700 hover:bg-purple-100'
+                        : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    }`}
+                    disabled={currentUser?.paymentStatus === 'unpaid'}
+                  >
+                    <BookOpen className="w-5 h-5" />
+                    <span>Browse Recitations</span>
+                  </button>
+                  {currentUser?.paymentStatus === 'unpaid' && (
+                    <Crown className="w-4 h-4 text-yellow-500 absolute top-3 right-3" />
+                  )}
+                </div>
+                
+                <div className="relative">
+                  <button 
+                    className={`w-full flex items-center space-x-3 p-3 rounded-xl transition-colors ${
+                      currentUser?.paymentStatus === 'paid'
+                        ? 'bg-blue-50 text-blue-700 hover:bg-blue-100'
+                        : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    }`}
+                    disabled={currentUser?.paymentStatus === 'unpaid'}
+                  >
+                    <Users className="w-5 h-5" />
+                    <span>Join Live Session</span>
+                  </button>
+                  {currentUser?.paymentStatus === 'unpaid' && (
+                    <Crown className="w-4 h-4 text-yellow-500 absolute top-3 right-3" />
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Learning Progress */}
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Learning Progress</h3>
+              {currentUser?.paymentStatus === 'paid' ? (
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex justify-between text-sm text-gray-600 mb-2">
+                      <span>Yarsanal Quran Progress</span>
+                      <span>75%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-3">
+                      <div className="bg-gradient-to-r from-emerald-400 to-teal-500 h-3 rounded-full" style={{width: '75%'}}></div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div className="flex justify-between text-sm text-gray-600 mb-2">
+                      <span>Tajweed Mastery</span>
+                      <span>45%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-3">
+                      <div className="bg-gradient-to-r from-purple-400 to-pink-500 h-3 rounded-full" style={{width: '45%'}}></div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-6">
+                    <h4 className="font-semibold text-gray-900 mb-3">Recent Achievements 🏆</h4>
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-3 p-2 bg-yellow-50 rounded-lg">
+                        <Star className="w-5 h-5 text-yellow-500" />
+                        <span className="text-sm text-gray-700">Completed Al-Fatiha perfectly!</span>
+                      </div>
+                      <div className="flex items-center space-x-3 p-2 bg-green-50 rounded-lg">
+                        <Award className="w-5 h-5 text-green-500" />
+                        <span className="text-sm text-gray-700">7-day learning streak!</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <Crown className="w-12 h-12 text-yellow-500 mx-auto mb-4 opacity-50" />
+                  <p className="text-gray-500 mb-4">Progress tracking available with Premium</p>
+                  <button 
+                    onClick={() => {
+                      if (currentUser) {
+                        setCurrentUser({...currentUser, paymentStatus: 'paid'});
+                      }
+                    }}
+                    className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-4 py-2 rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all duration-200"
+                  >
+                    Upgrade Now
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Upcoming Sessions */}
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Upcoming Sessions</h3>
+              {currentUser?.paymentStatus === 'paid' ? (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3 bg-emerald-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-gray-900">Advanced Tajweed</p>
+                      <p className="text-sm text-gray-600">Tomorrow at 19:00 GMT</p>
+                    </div>
+                    <div className="w-3 h-3 bg-emerald-500 rounded-full"></div>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-gray-900">Hifz Circle</p>
+                      <p className="text-sm text-gray-600">Friday at 16:00 GMT</p>
+                    </div>
+                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-6">
+                  <Clock className="w-10 h-10 text-gray-400 mx-auto mb-3" />
+                  <p className="text-gray-500">Session scheduling available with Premium</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   return renderPage();
 }
