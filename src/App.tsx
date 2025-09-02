@@ -147,6 +147,23 @@ function App() {
     }));
   };
 
+  const handleSignupSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Create user account
+    const newUser: User = {
+      name: formData.name,
+      email: formData.email,
+      userType: 'adult', // Default for now, can be enhanced later
+      learningLevel: selectedSession as LearningLevel,
+      selectedSessions: [selectedSession],
+      paymentStatus: 'unpaid'
+    };
+    
+    setCurrentUser(newUser);
+    setCurrentPage('dashboard');
+  };
+
   const HomePage = () => (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
       {/* Navigation */}
@@ -959,6 +976,7 @@ function App() {
             </div>
 
             <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSignupSubmit}>
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
                   Full Name
