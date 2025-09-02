@@ -147,23 +147,6 @@ function App() {
     }));
   };
 
-  const handleSignupSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Create user account
-    const newUser: User = {
-      name: formData.name,
-      email: formData.email,
-      userType: 'adult', // Default for now, can be enhanced later
-      learningLevel: selectedSession as LearningLevel,
-      selectedSessions: [selectedSession],
-      paymentStatus: 'unpaid'
-    };
-    
-    setCurrentUser(newUser);
-    setCurrentPage('dashboard');
-  };
-
   const HomePage = () => (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
       {/* Navigation */}
@@ -976,7 +959,6 @@ function App() {
             </div>
 
             <form className="space-y-6">
-            <form className="space-y-6" onSubmit={handleSignupSubmit}>
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
                   Full Name
@@ -1225,21 +1207,93 @@ function App() {
     </div>
   );
 
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'login':
-        return <LoginPage />;
-      case 'signup':
-        return <SignupPage />;
-      case 'salat-videos':
-        return <SalatVideosPage />;
-      case 'dashboard':
-        return <DashboardPage />;
-      default:
-        return <HomePage />;
-    }
-  };
+  const DashboardPage = () => (
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
+      <nav className="bg-white/80 backdrop-blur-md shadow-sm border-b border-emerald-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
+                <BookOpen className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                Lean Quran
+              </span>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <User className="w-5 h-5 text-gray-600" />
+                <span className="text-gray-700 font-medium">{currentUser?.name}</span>
+              </div>
+              <button 
+                onClick={() => {
+                  setCurrentUser(null);
+                  setCurrentPage('home');
+                }}
+                className="text-gray-600 hover:text-gray-800 transition-colors"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
 
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Welcome Section */}
+            <div className="bg-white rounded-2xl shadow-lg p-8">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                    Welcome back, {currentUser?.name}! 👋
+                  </h1>
+                  <p className="text-gray-600">
+                    Continue your Quran learning journey
+                  </p>
+                </div>
+                {currentUser?.paymentStatus === 'unpaid' && (
+                  <div className="text-center">
+                    <Crown className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
+                    <button 
+                      onClick={() => {
+                        if (currentUser) {
+                          setCurrentUser({...currentUser, paymentStatus: 'paid'});
+                        }
+                      }}
+                      className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-4 py-2 rounded-lg hover:from-emerald-600 hover:to-teal-700 transition-all duration-200"
+                    >
+                      Upgrade to Premium
+                    </button>
+                  </div>
+                )}
+              </div>
+              
+              {currentUser?.paymentStatus === 'unpaid' && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
+                  <div className="flex items-center space-x-3">
+                    <Crown className="w-6 h-6 text-yellow-600" />
+                    <div>
+                      <h3 className="font-semibold text-yellow-800">Upgrade to Premium</h3>
+                      <p className="text-yellow-700 text-sm">
+                        Unlock live sessions, progress tracking, and personalized feedback for just $19/month
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* My Sessions */}
+            <div className="bg-white rounded-2xl shadow-lg p-8">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">My Sessions</h2>
+                <div className="flex items-center space-x-2 text-sm text-gray-600">
+                  <Calendar className="w-4 h-4" />
+                  <span>This Week</span>
+                </div>
               </div>
               
               <div className="space-y-4">
@@ -1436,6 +1490,21 @@ function App() {
       </div>
     </div>
   );
+
+  const renderPage = () => {
+    switch (currentPage) {
+      case 'login':
+        return <LoginPage />;
+      case 'signup':
+        return <SignupPage />;
+      case 'salat-videos':
+        return <SalatVideosPage />;
+      case 'dashboard':
+        return <DashboardPage />;
+      default:
+        return <HomePage />;
+    }
+  };
 
   return renderPage();
 }
