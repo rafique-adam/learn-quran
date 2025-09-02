@@ -495,6 +495,9 @@ function App() {
             <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
             <input 
               type="email" 
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
               className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
               placeholder="your@email.com"
             />
@@ -503,12 +506,29 @@ function App() {
             <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
             <input 
               type="password" 
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
               className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
               placeholder="••••••••"
             />
           </div>
           <button 
             type="submit"
+            onClick={(e) => {
+              e.preventDefault();
+              // Mock login - create a user and redirect to dashboard
+              const newUser: User = {
+                name: formData.email.split('@')[0], // Use email prefix as name
+                email: formData.email,
+                userType: 'adult', // Default for login
+                learningLevel: 'beginner', // Default for login
+                selectedSessions: ['2'], // Default session for login
+                paymentStatus: 'paid' // Assume paid for demo
+              };
+              setCurrentUser(newUser);
+              setCurrentPage('dashboard');
+            }}
             className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-3 rounded-xl font-semibold hover:from-emerald-600 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl"
           >
             Sign In
@@ -730,70 +750,138 @@ function App() {
               {/* Account Details Form */}
               <div className="border-t border-gray-200 pt-8">
                 <h4 className="text-xl font-bold text-gray-900 mb-6">Account Details</h4>
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                    <input 
-                      type="text" 
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
-                      placeholder="Enter your full name"
-                    />
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  const newUser: User = {
+                    name: formData.name,
+                    email: formData.email,
+                    userType: userType!,
+                    learningLevel: learningLevel!,
+                    selectedSessions,
+                    paymentStatus: 'unpaid'
+                  };
+                  setCurrentUser(newUser);
+                  setCurrentPage('dashboard');
+                }}>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                      <input 
+                        type="text" 
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                        placeholder="Enter your full name"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                      <input 
+                        type="email" 
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                        placeholder="your@email.com"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                      <input 
+                        type="password" 
+                        name="password"
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                        placeholder="••••••••"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <Cake className="w-4 h-4 inline mr-2" />
+                        Date of Birth
+                      </label>
+                      <input 
+                        type="date" 
+                        name="dateOfBirth"
+                        value={formData.dateOfBirth}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <MapPin className="w-4 h-4 inline mr-2" />
+                        Country
+                      </label>
+                      <select
+                        name="country"
+                        value={formData.country}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                        required
+                      >
+                        <option value="">Select your country</option>
+                        {countries.map((country) => (
+                          <option key={country.code} value={country.name}>
+                            {country.flag} {country.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <Phone className="w-4 h-4 inline mr-2" />
+                        Phone Number
+                      </label>
+                      <div className="flex gap-2">
+                        <select
+                          name="countryCode"
+                          value={formData.countryCode}
+                          onChange={handleInputChange}
+                          className="px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white"
+                        >
+                          {countries.map((country) => (
+                            <option key={country.code} value={country.code}>
+                              {country.flag} {country.code}
+                            </option>
+                          ))}
+                        </select>
+                        <input
+                          type="tel"
+                          name="phoneNumber"
+                          value={formData.phoneNumber}
+                          onChange={handleInputChange}
+                          className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                          placeholder="Enter phone number"
+                          required
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                    <input 
-                      type="email" 
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
-                      placeholder="your@email.com"
-                    />
+                  
+                  <div className="flex items-center justify-between mt-8">
+                    <button 
+                      type="button"
+                      onClick={() => setLearningLevel(null)}
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      ← Back to level selection
+                    </button>
+                    <button 
+                      type="submit"
+                      className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-3 rounded-xl font-semibold hover:from-emerald-600 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+                      disabled={selectedSessions.length === 0}
+                    >
+                      Create Account
+                    </button>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                    <input 
-                      type="password" 
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
-                      placeholder="••••••••"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Age</label>
-                    <input 
-                      type="number" 
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
-                      placeholder="Enter your age"
-                      min={userType === 'child' ? 6 : 18}
-                      max={userType === 'child' ? 17 : 100}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between mt-8">
-                <button 
-                  onClick={() => setLearningLevel(null)}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  ← Back to level selection
-                </button>
-                <button 
-                  onClick={() => {
-                    // Create user account (mock)
-                    const newUser: User = {
-                      name: 'Student Name', // In real app, get from form
-                      email: 'student@email.com', // In real app, get from form
-                      userType: userType!,
-                      learningLevel: learningLevel!,
-                      selectedSessions,
-                      paymentStatus: 'unpaid'
-                    };
-                    setCurrentUser(newUser);
-                    setCurrentPage('dashboard');
-                  }}
-                  className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-3 rounded-xl font-semibold hover:from-emerald-600 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl"
-                  disabled={selectedSessions.length === 0}
-                >
-                  Create Account
-                </button>
+                </form>
               </div>
             </div>
           )}
@@ -1134,204 +1222,6 @@ function App() {
     }
   };
 
-  const DashboardPage = () => (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
-      {/* Navigation */}
-      <nav className="bg-white/80 backdrop-blur-md shadow-sm border-b border-emerald-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center">
-                <BookOpen className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-                Lean Quran
-              </span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2 text-gray-600">
-                <User className="w-4 h-4" />
-                <span>{currentUser?.name || 'Student'}</span>
-              </div>
-              <button 
-                onClick={() => {
-                  setCurrentUser(null);
-                  setCurrentPage('home');
-                  setUserType(null);
-                  setLearningLevel(null);
-                  setSelectedSessions([]);
-                }}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                Logout
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Payment Status Banner */}
-        {currentUser?.paymentStatus === 'unpaid' && (
-          <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-2xl p-6 mb-8 shadow-lg">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                  <Crown className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold">Unlock Premium Features! 🌟</h3>
-                  <p className="opacity-90">Get access to live sessions and Quran recitations for just $19/month</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => {
-                  // Mock payment success
-                  if (currentUser) {
-                    setCurrentUser({...currentUser, paymentStatus: 'paid'});
-                  }
-                }}
-                className="bg-white text-orange-500 px-6 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-colors"
-              >
-                Upgrade Now
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Welcome Section */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Welcome back, {currentUser?.name || 'Student'}! 🌙
-          </h1>
-          <p className="text-xl text-gray-600">
-            Continue your beautiful Quran learning journey
-          </p>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="grid md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-emerald-100">
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl flex items-center justify-center">
-                <BookOpen className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Sessions Attended</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {currentUser?.paymentStatus === 'paid' ? '12' : '0'}
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-purple-100">
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-500 rounded-xl flex items-center justify-center">
-                <Award className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Learning Streak</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {currentUser?.paymentStatus === 'paid' ? '7 days' : '0 days'}
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-blue-100">
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-xl flex items-center justify-center">
-                <Star className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Badges Earned</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {currentUser?.paymentStatus === 'paid' ? '5' : '0'}
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-green-100">
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl flex items-center justify-center">
-                <Globe className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Surahs Learned</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {currentUser?.paymentStatus === 'paid' ? '8' : '0'}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Quran Recitations Section */}
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Quran Recitations 📖</h2>
-                {currentUser?.paymentStatus === 'unpaid' && (
-                  <div className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
-                    Premium Required
-                  </div>
-                )}
-              </div>
-              
-              <div className="grid md:grid-cols-2 gap-4">
-                {[
-                  { name: 'Al-Fatiha', arabic: 'الفاتحة', verses: 7, duration: '2:30' },
-                  { name: 'Al-Baqarah', arabic: 'البقرة', verses: 286, duration: '45:20' },
-                  { name: 'Al-Ikhlas', arabic: 'الإخلاص', verses: 4, duration: '1:15' },
-                  { name: 'An-Nas', arabic: 'الناس', verses: 6, duration: '1:45' }
-                ].map((surah, index) => (
-                  <div key={index} className="relative">
-                    <div className={`p-4 border-2 rounded-xl transition-all duration-200 ${
-                      currentUser?.paymentStatus === 'paid' 
-                        ? 'border-emerald-200 hover:border-emerald-400 hover:bg-emerald-50 cursor-pointer' 
-                        : 'border-gray-200 opacity-60'
-                    }`}>
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="font-semibold text-gray-900">{surah.name}</h3>
-                        <span className="text-xl text-emerald-600">{surah.arabic}</span>
-                      </div>
-                      <div className="flex items-center justify-between text-sm text-gray-500">
-                        <span>{surah.verses} verses</span>
-                        <span>{surah.duration}</span>
-                      </div>
-                      {currentUser?.paymentStatus === 'paid' && (
-                        <button className="mt-3 w-full bg-emerald-500 text-white py-2 rounded-lg hover:bg-emerald-600 transition-colors">
-                          <Play className="w-4 h-4 inline mr-2" />
-                          Listen
-                        </button>
-                      )}
-                    </div>
-                    {currentUser?.paymentStatus === 'unpaid' && (
-                      <div className="absolute inset-0 bg-white/80 rounded-xl flex items-center justify-center">
-                        <div className="text-center">
-                          <Crown className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
-                          <p className="text-sm font-medium text-gray-700">Premium Required</p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Live Sessions Section */}
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Your Live Sessions 🎯</h2>
-                {currentUser?.paymentStatus === 'unpaid' && (
-                  <div className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
-                    Premium Required
-                  </div>
-                )}
               </div>
               
               <div className="space-y-4">
