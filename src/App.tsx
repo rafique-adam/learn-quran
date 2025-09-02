@@ -4,58 +4,84 @@ import { BookOpen, Users, Clock, Star, Play, User, LogIn, UserPlus, Calendar, Gl
 type Page = 'home' | 'login' | 'signup' | 'dashboard' | 'salat-videos';
 type UserType = 'child' | 'adult' | null;
 type LearningLevel = 'beginner' | 'advanced' | 'hifz' | null;
+type PaymentStatus = 'unpaid' | 'paid';
 
 interface Session {
   id: string;
   name: string;
   day: string;
   time: string;
-  duration: string;
+  endTime: string;
   level: LearningLevel;
   ageGroup: UserType;
   spotsLeft: number;
+  description: string;
 }
 
-const mockSessions: Session[] = [
+interface User {
+  name: string;
+  email: string;
+  userType: UserType;
+  learningLevel: LearningLevel;
+  selectedSessions: string[];
+  paymentStatus: PaymentStatus;
+}
+
+const allSessions: Session[] = [
   {
     id: '1',
-    name: 'Beginner Yarsanal Quran - Children',
+    name: 'Yarsanal Quran Basics',
     day: 'Monday',
     time: '14:00 GMT',
-    duration: '1 hour',
+    endTime: '15:00 GMT',
     level: 'beginner',
     ageGroup: 'child',
-    spotsLeft: 3
+    spotsLeft: 3,
+    description: 'Learn Arabic letters and basic pronunciation'
   },
   {
     id: '2',
-    name: 'Advanced Quran Class - Adults',
+    name: 'Advanced Tajweed Class',
     day: 'Wednesday',
     time: '19:00 GMT',
-    duration: '1.5 hours',
+    endTime: '20:30 GMT',
     level: 'advanced',
     ageGroup: 'adult',
-    spotsLeft: 2
+    spotsLeft: 2,
+    description: 'Perfect your recitation with advanced Tajweed rules'
   },
   {
     id: '3',
-    name: 'Hifz Memorization - Youth',
+    name: 'Hifz Memorization Circle',
     day: 'Friday',
     time: '16:00 GMT',
-    duration: '2 hours',
+    endTime: '18:00 GMT',
     level: 'hifz',
     ageGroup: 'child',
-    spotsLeft: 1
+    spotsLeft: 1,
+    description: 'Systematic Quran memorization with retention techniques'
   },
   {
     id: '4',
-    name: 'Beginner Yarsanal Quran - Adults',
+    name: 'Adult Beginner Circle',
     day: 'Saturday',
     time: '10:00 GMT',
-    duration: '1 hour',
+    endTime: '11:00 GMT',
     level: 'beginner',
     ageGroup: 'adult',
-    spotsLeft: 5
+    spotsLeft: 5,
+    description: 'Start your Quran journey with supportive adult community'
+  },
+  {
+    id: '5',
+    name: 'Youth Advanced Reading',
+    day: 'Sunday',
+    time: '15:00 GMT',
+    endTime: '16:30 GMT',
+    level: 'advanced',
+    ageGroup: 'child',
+    spotsLeft: 4,
+    description: 'Advanced recitation practice for young learners'
   }
 ];
 
@@ -64,6 +90,7 @@ function App() {
   const [userType, setUserType] = useState<UserType>(null);
   const [learningLevel, setLearningLevel] = useState<LearningLevel>(null);
   const [selectedSessions, setSelectedSessions] = useState<string[]>([]);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   const HomePage = () => (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
@@ -541,7 +568,7 @@ function App() {
               </p>
               
               <div className="space-y-4 mb-8">
-                {mockSessions
+                {allSessions
                   .filter(session => 
                     session.ageGroup === userType && 
                     session.level === learningLevel
@@ -565,6 +592,7 @@ function App() {
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
                           <h4 className="text-lg font-semibold text-gray-900 mb-2">{session.name}</h4>
+                          <p className="text-sm text-gray-600 mb-3">{session.description}</p>
                           <div className="flex items-center space-x-4 text-sm text-gray-600">
                             <div className="flex items-center space-x-1">
                               <Calendar className="w-4 h-4" />
@@ -572,11 +600,7 @@ function App() {
                             </div>
                             <div className="flex items-center space-x-1">
                               <Clock className="w-4 h-4" />
-                              <span>{session.time}</span>
-                            </div>
-                            <div className="flex items-center space-x-1">
-                              <Globe className="w-4 h-4" />
-                              <span>{session.duration}</span>
+                              <span>{session.time} - {session.endTime}</span>
                             </div>
                           </div>
                         </div>
@@ -587,6 +611,65 @@ function App() {
                       </div>
                     </div>
                   ))}
+                
+                {/* Show all sessions if none match the filter */}
+                {allSessions.filter(session => 
+                  session.ageGroup === userType && 
+                  session.level === learningLevel
+                ).length === 0 && (
+                  <div className="text-center py-8">
+                    <p className="text-gray-600 mb-4">No sessions available for your selected level yet.</p>
+                    <p className="text-sm text-gray-500">Here are all available sessions:</p>
+                    <div className="mt-4 space-y-4">
+                      {allSessions.map(session => (
+                        <div 
+                          key={session.id}
+                          className={`p-6 border-2 rounded-2xl cursor-pointer transition-all duration-200 ${
+                            selectedSessions.includes(session.id)
+                              ? 'border-emerald-400 bg-emerald-50'
+                              : 'border-gray-200 hover:border-emerald-300 hover:bg-emerald-25'
+                          }`}
+                          onClick={() => {
+                            if (selectedSessions.includes(session.id)) {
+                              setSelectedSessions(selectedSessions.filter(id => id !== session.id));
+                            } else {
+                              setSelectedSessions([...selectedSessions, session.id]);
+                            }
+                          }}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <h4 className="text-lg font-semibold text-gray-900 mb-2">{session.name}</h4>
+                              <p className="text-sm text-gray-600 mb-3">{session.description}</p>
+                              <div className="flex items-center space-x-4 text-sm text-gray-600">
+                                <div className="flex items-center space-x-1">
+                                  <Calendar className="w-4 h-4" />
+                                  <span>{session.day}</span>
+                                </div>
+                                <div className="flex items-center space-x-1">
+                                  <Clock className="w-4 h-4" />
+                                  <span>{session.time} - {session.endTime}</span>
+                                </div>
+                                <div className="flex items-center space-x-1">
+                                  <Users className="w-4 h-4" />
+                                  <span className="capitalize">{session.ageGroup}s</span>
+                                </div>
+                                <div className="flex items-center space-x-1">
+                                  <Award className="w-4 h-4" />
+                                  <span className="capitalize">{session.level}</span>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <div className="text-sm text-gray-500 mb-1">Spots left</div>
+                              <div className="text-lg font-bold text-emerald-600">{session.spotsLeft}</div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Account Details Form */}
@@ -638,11 +721,23 @@ function App() {
                   ← Back to level selection
                 </button>
                 <button 
-                  type="submit"
+                  onClick={() => {
+                    // Create user account (mock)
+                    const newUser: User = {
+                      name: 'Student Name', // In real app, get from form
+                      email: 'student@email.com', // In real app, get from form
+                      userType: userType!,
+                      learningLevel: learningLevel!,
+                      selectedSessions,
+                      paymentStatus: 'unpaid'
+                    };
+                    setCurrentUser(newUser);
+                    setCurrentPage('dashboard');
+                  }}
                   className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-3 rounded-xl font-semibold hover:from-emerald-600 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl"
                   disabled={selectedSessions.length === 0}
                 >
-                  Create Account & Subscribe
+                  Create Account
                 </button>
               </div>
             </div>
