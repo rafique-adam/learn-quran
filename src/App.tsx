@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BookOpen, Play, Calendar, Users, Star, Clock, Heart, Award, User, Lock, CheckCircle, ArrowRight, Menu, X, Crown } from 'lucide-react';
+import { BookOpen, Users, Award, Play, Star, Clock, MapPin, Crown, Lock, CheckCircle, Calendar, User, Heart, Sparkles, LogIn } from 'lucide-react';
 
 type Page = 'home' | 'login' | 'signup' | 'dashboard' | 'salat-videos';
 type UserType = 'child' | 'adult' | null;
