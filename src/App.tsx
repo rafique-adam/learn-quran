@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BookOpen, Users, Play, Star, Crown, LogIn, Zap, Award, Calendar, Heart, Clock, User, Globe } from 'lucide-react';
+import { BookOpen, Users, Play, Star, Crown, LogIn, Zap, Award, Calendar, Heart, Clock, User, Globe, Phone, MapPin, Cake } from 'lucide-react';
 
 type Page = 'home' | 'login' | 'signup' | 'dashboard' | 'salat-videos';
 type UserType = 'child' | 'adult' | null;
@@ -91,6 +91,61 @@ function App() {
   const [learningLevel, setLearningLevel] = useState<LearningLevel>(null);
   const [selectedSessions, setSelectedSessions] = useState<string[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [selectedSession, setSelectedSession] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    dateOfBirth: '',
+    country: '',
+    countryCode: '+1',
+    phoneNumber: ''
+  });
+
+  const sessions = [
+    {
+      id: 'beginner',
+      title: 'Beginner Session',
+      description: 'Perfect for children ages 5-10 starting their Quran journey',
+      duration: '30 minutes',
+      features: ['Basic Arabic letters', 'Simple verses', 'Interactive games', 'Colorful visuals']
+    },
+    {
+      id: 'intermediate',
+      title: 'Intermediate Session',
+      description: 'Ideal for youth ages 11-16 building their foundation',
+      duration: '45 minutes',
+      features: ['Tajweed basics', 'Short surahs', 'Pronunciation practice', 'Progress tracking']
+    },
+    {
+      id: 'advanced',
+      title: 'Advanced Session',
+      description: 'For dedicated learners ready for deeper study',
+      duration: '60 minutes',
+      features: ['Complex recitation', 'Tafseer introduction', 'Memorization techniques', 'Peer discussions']
+    }
+  ];
+
+  const countries = [
+    { code: '+1', name: 'United States', flag: '🇺🇸' },
+    { code: '+44', name: 'United Kingdom', flag: '🇬🇧' },
+    { code: '+33', name: 'France', flag: '🇫🇷' },
+    { code: '+49', name: 'Germany', flag: '🇩🇪' },
+    { code: '+81', name: 'Japan', flag: '🇯🇵' },
+    { code: '+86', name: 'China', flag: '🇨🇳' },
+    { code: '+91', name: 'India', flag: '🇮🇳' },
+    { code: '+971', name: 'UAE', flag: '🇦🇪' },
+    { code: '+966', name: 'Saudi Arabia', flag: '🇸🇦' },
+    { code: '+20', name: 'Egypt', flag: '🇪🇬' }
+  ];
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
   const HomePage = () => (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
@@ -764,6 +819,204 @@ function App() {
       </div>
     </div>
   );
+
+  if (currentPage === 'signup') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <BookOpen className="w-8 h-8 text-white" />
+            </div>
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Join Lean Quran</h1>
+              <p className="text-gray-600">Start your interactive Quran learning journey today</p>
+            </div>
+
+            {/* Session Selection */}
+            <div className="mb-8">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">Choose Your Learning Session</h2>
+              <div className="grid gap-4">
+                {sessions.map((session) => (
+                  <div
+                    key={session.id}
+                    className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                      selectedSession === session.id
+                        ? 'border-emerald-500 bg-emerald-50'
+                        : 'border-gray-200 hover:border-emerald-300'
+                    }`}
+                    onClick={() => setSelectedSession(session.id)}
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="font-semibold text-gray-900">{session.title}</h3>
+                      <div className="flex items-center text-sm text-gray-500">
+                        <Clock className="w-4 h-4 mr-1" />
+                        {session.duration}
+                      </div>
+                    </div>
+                    <p className="text-gray-600 text-sm mb-3">{session.description}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {session.features.map((feature, index) => (
+                        <span
+                          key={index}
+                          className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full"
+                        >
+                          {feature}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <form className="space-y-6">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  placeholder="Enter your full name"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  placeholder="Enter your email"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  placeholder="Create a password"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700 mb-2">
+                  <Cake className="w-4 h-4 inline mr-2" />
+                  Date of Birth
+                </label>
+                <input
+                  type="date"
+                  id="dateOfBirth"
+                  name="dateOfBirth"
+                  value={formData.dateOfBirth}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-2">
+                  <MapPin className="w-4 h-4 inline mr-2" />
+                  Country
+                </label>
+                <select
+                  id="country"
+                  name="country"
+                  value={formData.country}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                >
+                  <option value="">Select your country</option>
+                  {countries.map((country) => (
+                    <option key={country.code} value={country.name}>
+                      {country.flag} {country.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-2">
+                  <Phone className="w-4 h-4 inline mr-2" />
+                  Phone Number
+                </label>
+                <div className="flex gap-2">
+                  <select
+                    name="countryCode"
+                    value={formData.countryCode}
+                    onChange={handleInputChange}
+                    className="px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white"
+                  >
+                    {countries.map((country) => (
+                      <option key={country.code} value={country.code}>
+                        {country.flag} {country.code}
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    type="tel"
+                    id="phoneNumber"
+                    name="phoneNumber"
+                    value={formData.phoneNumber}
+                    onChange={handleInputChange}
+                    className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    placeholder="Enter phone number"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={!selectedSession}
+                className={`w-full py-3 px-4 rounded-lg transition-colors font-medium ${
+                  selectedSession
+                    ? 'bg-emerald-600 text-white hover:bg-emerald-700'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
+              >
+                {selectedSession ? 'Create Account' : 'Please select a session first'}
+              </button>
+            </form>
+
+            <div className="mt-6 text-center">
+              <p className="text-gray-600">
+                Already have an account?{' '}
+                <button 
+                  onClick={() => setCurrentPage('login')}
+                  className="text-emerald-600 hover:text-emerald-700 font-semibold"
+                >
+                  Sign in here
+                </button>
+              </p>
+              <button 
+                onClick={() => setCurrentPage('home')}
+                className="text-gray-500 hover:text-gray-700 text-sm mt-2"
+              >
+                ← Back to home
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const SalatVideosPage = () => (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
